@@ -1,10 +1,15 @@
 export default class Player{
-    constructor(game){
+    constructor(game, playerNote){
         this.game = game;
         this.width = 100;
         this.height = 91.3;
         this.frameX = 0;
         this.frameY = 0;
+        
+        this.note = playerNote;
+        this.fontSize = 30;
+        this.fontFamily = 'Helvetica';
+        this.heightAdjustor = 20;
 
         this.ground = this.game.gameHeight - this.height;
         this.rightCanvasLimit = this.game.gameWidth - this.width;
@@ -55,5 +60,9 @@ export default class Player{
     draw(ctx){
         ctx.drawImage(playerImg, this.frameX * this.width, this.frameY * this.height, 
             this.width, this.height, this.position.x, this.position.y, this.width, this.height);
+        ctx.font = this.fontSize + 'px ' + this.fontFamily;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'Red';
+        ctx.fillText(this.note, this.position.x + this.width / 2, this.position.y + this.height - this.heightAdjustor);
     }
 }
