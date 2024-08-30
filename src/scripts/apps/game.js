@@ -5,9 +5,15 @@ export default class Game{
     constructor(gameWidth, gameHeight){
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
+
         this.playerNote = this.generatePlayerNote();
         this.player = new Player(this, this.playerNote);
+        this.player.currentState = this.player.states[0];
+        this.player.currentState.enter();
+        
         this.input = new InputHandler();
+        this.speed = 0;
+        this.maxSpeed = 6;
     }
 
     generatePlayerNote(){
@@ -15,22 +21,16 @@ export default class Game{
         switch (noteValue){
             case 1:
                 return 'Do';
-            break;
             case 2:
                 return 'Re';
-            break;
             case 3:
                 return 'Mi';
-            break;
             case 4:
                 return 'Fa';
-            break;
             case 5:
                 return 'Sol';
-            break;
             case 6:
                 return 'La';
-            break;
             case 7:
                 return 'Si';           
         }
