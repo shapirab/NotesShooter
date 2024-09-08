@@ -1,4 +1,4 @@
-import { Running, Sitting } from "../states/playerState.js";
+import { Falling, Jumping, Running, Sitting } from "../states/playerState.js";
 
 export default class Player{
     constructor(game, playerNote){
@@ -18,7 +18,8 @@ export default class Player{
         this.fontFamily = 'Helvetica';
         this.heightAdjustor = 20;
 
-        this.states = [new Sitting(this.game), new Running(this.game)]
+        this.states = [new Sitting(this.game), new Running(this.game), new Jumping(this.game), 
+            new Falling(this.game)];
 
         this.ground = this.game.gameHeight - this.height;
         this.rightCanvasLimit = this.game.gameWidth - this.width;
@@ -33,6 +34,7 @@ export default class Player{
         }
         this.gravity = 1;
         this.maxSpeed = 5;
+        this.maxHeight = 30;
     }
 
     onGround(){
@@ -77,17 +79,15 @@ export default class Player{
         this.moveLeftOrRight(input);
         this.animatePlayer(deltaTime);
         
-        this.position.y -= this.velocity.y;
+        this.position.y += this.velocity.y;
         
         if(!this.onGround()){
-            this.velocity.y -= this.gravity;
+            this.velocity.y += this.gravity;
         }
         else{
             this.velocity.y = 0;
         }
-
         this.currentState.handleInputs(input);
-
     }
 
     draw(ctx){
