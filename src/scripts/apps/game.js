@@ -2,6 +2,8 @@ import { Background } from "../background.js";
 import Player from "../models/player.js";
 import InputHandler from "./input.js";
 
+import { Bat } from '../models/friendemy.js';
+
 export default class Game{
     constructor(gameWidth, gameHeight){
         this.gameWidth = gameWidth;
@@ -17,6 +19,10 @@ export default class Game{
         this.input = new InputHandler();
         this.speed = 0;
         this.maxSpeed = 6;
+
+        this.friendemies = [];
+        this.friendemiesTimer = 0;
+        this.friendemiesInterval = 1000;
     }
 
     generatePlayerNote(){
@@ -44,13 +50,35 @@ export default class Game{
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    addFriendemy(){
+        if(this.speed > 0 && Math.random() < 0.5){
+            this.friendemies.push(new Bat(this));
+        }
+    }
+
     update(deltaTime){
         this.background.update();
         this.player.update(this.input, deltaTime);
+     
+        if(this.friendemiesTimer > this.friendemiesInterval){
+            this.addFriendemy();
+            this.friendemiesTimer = 0;
+        }
+        else{
+            this.friendemiesTimer += deltaTime;
+        }
+
+        this.friendemies.forEach(friendemy => {
+            friendemy.update(deltaTime);
+        });
     }
 
     draw(ctx){
         this.background.draw(ctx);
         this.player.draw(ctx);
+
+        this.friendemies.forEach(friendemy => {
+            friendemy.draw(ctx);
+        });
     }
 }
