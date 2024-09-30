@@ -2,7 +2,7 @@ import { Background } from "../background.js";
 import Player from "../models/player.js";
 import InputHandler from "./input.js";
 
-import { Bat } from '../models/friendemy.js';
+import { Bat, GroundZombie } from '../models/friendemy.js';
 
 export default class Game{
     constructor(gameWidth, gameHeight){
@@ -54,6 +54,9 @@ export default class Game{
         if(this.speed > 0 && Math.random() < 0.5){
             this.friendemies.push(new Bat(this));
         }
+        else if(this.speed > 0){
+            this.friendemies.push(new GroundZombie(this));
+        }
     }
 
     update(deltaTime){
@@ -68,8 +71,12 @@ export default class Game{
             this.friendemiesTimer += deltaTime;
         }
 
-        this.friendemies.forEach(friendemy => {
+        this.friendemies.forEach((friendemy, index) => {
             friendemy.update(deltaTime);
+            
+            if(friendemy.markedForDeletion){
+                this.friendemies.splice(index, 1);
+            }
         });
     }
 

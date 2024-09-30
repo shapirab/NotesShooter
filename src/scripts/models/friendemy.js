@@ -28,7 +28,7 @@ class Friendemy{
     }
 
     setMarkedForDeletion(){
-        if(this.position.x < 0 || this.position.y > this.game.gameHeight){
+        if(this.position.x < -this.width || this.position.y > this.game.gameHeight){
             this.markedForDeletion = true;
         }
     }
@@ -52,8 +52,13 @@ export class Bat extends Friendemy{
     constructor(game){
         super();
         this.game = game;
+        
         this.width = 1596 / 6;
         this.height = 188;
+        this.sizeFactor = 2;
+        this.drawWidth = this.width / this.sizeFactor;
+        this.drawHeight = this.height / this.sizeFactor;
+
         this.position = {
             x: this.game.gameWidth + Math.random() * this.game.gameWidth * 0.5,
             y: Math.random() * this.game.gameHeight * 0.5
@@ -77,8 +82,39 @@ export class Bat extends Friendemy{
     }
     
     draw(ctx){
-        super.draw(ctx);
+        //super.draw(ctx);
+        ctx.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, 
+            this.width, this.height, this.position.x, this.position.y, 
+            this.drawWidth, this.drawHeight);
+    }
+}
+
+export class GroundZombie extends Friendemy{
+    constructor(game){
+        super();
+        this.game = game;
+
+        this.width = 120;
+        this.height = 87;
+
+        this.position = {
+            x: this.game.gameWidth + Math.random() * this.game.gameWidth * 0.5,
+            y: this.game.gameHeight - this.height
+        }
+        this.speed = {
+            x: Math.random() + 1,
+            y: 0
+        }
+
+        this.maxFrames = 7;
+        this.image = enemy_zombie;
     }
 
+    update(deltaTime){
+        super.update(deltaTime);
+    }
 
+    draw(ctx){
+        super.draw(ctx);
+    }
 }
