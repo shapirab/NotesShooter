@@ -11,21 +11,23 @@ export default class Game{
 
         this.background = new Background(this);
 
-        this.playerNote = this.generatePlayerNote();
+        this.playerNote = this.generateRandomNote();
         this.player = new Player(this, this.playerNote);
         this.player.currentState = this.player.states[0];
         this.player.currentState.enter();
         
-        this.input = new InputHandler();
+        this.input = new InputHandler(this);
         this.speed = 0;
         this.maxSpeed = 6;
 
         this.friendemies = [];
         this.friendemiesTimer = 0;
         this.friendemiesInterval = 1000;
+
+        this.debug = false;
     }
 
-    generatePlayerNote(){
+    generateRandomNote(){
         let noteValue = this.getRandomNumber(1, 7);
         switch (noteValue){
             case 1:
@@ -52,10 +54,10 @@ export default class Game{
 
     addFriendemy(){
         if(this.speed > 0 && Math.random() < 0.5){
-            this.friendemies.push(new Bat(this));
+            this.friendemies.push(new Bat(this, this.generateRandomNote()));
         }
         else if(this.speed > 0){
-            this.friendemies.push(new GroundZombie(this));
+            this.friendemies.push(new GroundZombie(this, this.generateRandomNote()));
         }
     }
 

@@ -1,5 +1,5 @@
 class Friendemy{
-    constructor(){
+    constructor(note){
         this.frameX = 0;
         this.frameY = 0;
 
@@ -8,6 +8,11 @@ class Friendemy{
         this.frameTimer = 0;
 
         this.markedForDeletion = false;
+
+        this.note = note;
+        this.fontSize = 30;
+        this.fontFamily = 'Helvetica';
+        this.heightAdjustor = 20;
     }
 
     animateFriendemy(deltaTime){
@@ -42,15 +47,16 @@ class Friendemy{
     }
 
     draw(ctx){
-        ctx.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, 
-            this.width, this.height, this.position.x, this.position.y, 
-            this.width, this.height);
+        ctx.font = this.fontSize + 'px ' + this.fontFamily;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'Red';
+        
     }
 }
 
 export class Bat extends Friendemy{
-    constructor(game){
-        super();
+    constructor(game, note){
+        super(note);
         this.game = game;
         
         this.width = 1596 / 6;
@@ -82,16 +88,22 @@ export class Bat extends Friendemy{
     }
     
     draw(ctx){
-        //super.draw(ctx);
         ctx.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, 
             this.width, this.height, this.position.x, this.position.y, 
             this.drawWidth, this.drawHeight);
+
+        ctx.fillText(this.note, this.position.x + this.drawWidth / 2, 
+            this.position.y + this.drawHeight - this.heightAdjustor);
+        if(this.game.debug){
+            ctx.strokeRect(this.position.x, this.position.y, this.drawWidth, this.drawHeight); 
+        }
+        super.draw(ctx);        
     }
 }
 
 export class GroundZombie extends Friendemy{
-    constructor(game){
-        super();
+    constructor(game, note){
+        super(note);
         this.game = game;
 
         this.width = 120;
@@ -115,6 +127,13 @@ export class GroundZombie extends Friendemy{
     }
 
     draw(ctx){
-        super.draw(ctx);
+        ctx.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, 
+            this.width, this.height, this.position.x, this.position.y, 
+            this.width, this.height);
+            super.draw(ctx);
+        ctx.fillText(this.note, this.position.x + this.width / 2, this.position.y + this.height - this.heightAdjustor);
+        if(this.game.debug){
+            ctx.strokeRect(this.position.x, this.position.y, this.width, this.height); 
+        }
     }
 }

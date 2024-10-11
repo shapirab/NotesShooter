@@ -1,5 +1,6 @@
 export default class InputHandler{
-    constructor(){
+    constructor(game){
+        this.game = game;
         this.keys = {
             rightKey: {
                 pressed: false
@@ -33,6 +34,10 @@ export default class InputHandler{
             }
             else if(e.key === 'Enter'){
                 this.keys.enterKey.pressed = true;
+            }
+
+            if(e.key === 'd'){
+                this.game.debug = !this.game.debug;
             }
         });
 
