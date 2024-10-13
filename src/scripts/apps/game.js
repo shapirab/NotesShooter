@@ -21,6 +21,7 @@ export default class Game{
         this.maxSpeed = 6;
 
         this.friendemies = [];
+        this.shootingProjectiles = [];
         this.friendemiesTimer = 0;
         this.friendemiesInterval = 1000;
 
@@ -80,6 +81,13 @@ export default class Game{
                 this.friendemies.splice(index, 1);
             }
         });
+
+        this.shootingProjectiles.forEach((projectile, index) => {
+            if(projectile.markedForDeletion){
+                this.shootingProjectiles.splice(index, 1);
+            }
+            projectile.update();
+        });
     }
 
     draw(ctx){
@@ -89,5 +97,9 @@ export default class Game{
         this.friendemies.forEach(friendemy => {
             friendemy.draw(ctx);
         });
+
+        this.shootingProjectiles.forEach(projectile => {
+            projectile.draw(ctx);
+        })
     }
 }
