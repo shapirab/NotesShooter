@@ -12,6 +12,7 @@ export default class ShootingAction{
     }
 
     update() {
+        console.log('hello')
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
         this.alpha -= 0.001;
