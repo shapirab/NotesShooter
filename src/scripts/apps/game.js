@@ -25,6 +25,9 @@ export default class Game{
         this.friendemiesTimer = 0;
         this.friendemiesInterval = 1000;
 
+        this.score = 0;
+        this.addToScoreValue = 50;
+
         this.debug = false;
     }
 
@@ -53,6 +56,16 @@ export default class Game{
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    createFriendemy(deltaTime){
+        if(this.friendemiesTimer > this.friendemiesInterval){
+            this.addFriendemy();
+            this.friendemiesTimer = 0;
+        }
+        else{
+            this.friendemiesTimer += deltaTime;
+        }
+    }
+
     addFriendemy(){
         if(this.speed > 0 && Math.random() < 0.5){
             this.friendemies.push(new Bat(this, this.generateRandomNote()));
@@ -62,18 +75,49 @@ export default class Game{
         }
     }
 
+    hitAction(){
+        this.friendemies.forEach((friendemy) => {
+            this.shootingProjectiles.forEach((projectile) => {
+                if(this.isHit(friendemy, projectile)){
+                    projectile.markedForDeletion = true;                  
+                    if(!this.isFriend(friendemy)){
+                        this.score += this.addToScoreValue;                        
+                    }
+                    else{
+                        this.score -= this.addToScoreValue;
+                    }
+                    friendemy.markedForDeletion = true;
+                }
+            });
+        });
+    }
+
+    isHit(friendemy, projectile){
+        let projectileMiddle = projectile.radius;
+        let firendemyMiddle = friendemy.width / 2;
+        let distance = this.calcProjectileDistanceFromFriendemy(friendemy, projectile);
+        if(distance - projectileMiddle - firendemyMiddle < 1){
+            return true;
+        }
+        return false;
+    }
+
+    calcProjectileDistanceFromFriendemy(friendemy, projectile){
+        return Math.hypot(projectile.position.x - friendemy.position.x, projectile.position.y - friendemy.position.y);
+    }
+
+    isFriend(friendemy){
+        return this.player.note === friendemy.note;
+    }
+
     update(deltaTime){
+        console.log(`score: ${this.score}`);
         this.background.update();
         this.player.update(this.input, deltaTime);
-     
-        if(this.friendemiesTimer > this.friendemiesInterval){
-            this.addFriendemy();
-            this.friendemiesTimer = 0;
-        }
-        else{
-            this.friendemiesTimer += deltaTime;
-        }
 
+        this.createFriendemy(deltaTime);
+        this.hitAction();
+     
         this.friendemies.forEach((friendemy, index) => {
             friendemy.update(deltaTime);
             
