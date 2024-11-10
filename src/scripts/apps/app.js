@@ -1,5 +1,5 @@
 import Game from "./game.js";
-import ShootingAction from "./shootingAction.js";
+import ShootingParticle from "../models/shootingParticle.js";
 
 window.addEventListener('load', () => {
     const canvas = document.getElementById('main-canvas');
@@ -21,14 +21,16 @@ window.addEventListener('load', () => {
         let positionY = game.player.position.y + game.player.height * 0.5;
         let radius = 3;
         let color = 'white';
-        game.shootingProjectiles.push(new ShootingAction(positionX, positionY, radius, color, velocity));
+        game.shootingProjectiles.push(new ShootingParticle(positionX, positionY, radius, color, velocity));
     }
     
     let lastTimestamp = 0;
     function animate(timestamp){
         let deltaTime = timestamp - lastTimestamp;
         lastTimestamp = timestamp;
-        requestAnimationFrame(animate);
+        if(!game.gameOver){
+            requestAnimationFrame(animate);
+        }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         game.update(deltaTime);
         game.draw(ctx);

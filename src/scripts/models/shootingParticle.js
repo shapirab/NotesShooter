@@ -1,4 +1,4 @@
-export default class ShootingAction{
+export default class ShootingParticle{
     constructor(x, y, radius, color, velocity){
         this.position = {
             x: x,

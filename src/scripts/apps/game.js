@@ -29,6 +29,8 @@ export default class Game{
         this.addToScoreValue = 50;
 
         this.debug = false;
+        this.gameOver = false;
+
     }
 
     generateRandomNote(){
@@ -106,6 +108,27 @@ export default class Game{
         return Math.hypot(projectile.position.x - friendemy.position.x, projectile.position.y - friendemy.position.y);
     }
 
+    collisionAction(){
+        this.friendemies.forEach((friendemy) => {
+            if(this.isColliding(friendemy)){
+                if(this.isFriend(friendemy)){
+                    friendemy.markedForDeletion = true;
+                    this.score += this.addToScoreValue * 4;
+                }
+                else{
+                    this.gameOver = true;
+                }
+            }
+        });
+    }
+
+    isColliding(friendemy){
+        return friendemy.position.x < this.player.position.x + this.player.width
+        && friendemy.position.x + friendemy.width > this.player.position.x 
+        && friendemy.position.y < this.player.position.y + this.player.height
+        && friendemy.position.y + friendemy.height > this.player.position.y;
+    }
+
     isFriend(friendemy){
         return this.player.note === friendemy.note;
     }
@@ -132,6 +155,8 @@ export default class Game{
             }
             projectile.update();
         });
+
+        this.collisionAction();
     }
 
     draw(ctx){
