@@ -3,6 +3,7 @@ import Player from "../models/player.js";
 import InputHandler from "./input.js";
 
 import { Bat, GroundZombie } from '../models/friendemy.js';
+import UI from "./ui.js";
 
 export default class Game{
     constructor(gameWidth, gameHeight){
@@ -30,6 +31,8 @@ export default class Game{
 
         this.debug = false;
         this.gameOver = false;
+
+        this.UI = new UI(this);
 
     }
 
@@ -113,7 +116,7 @@ export default class Game{
             if(this.isColliding(friendemy)){
                 if(this.isFriend(friendemy)){
                     friendemy.markedForDeletion = true;
-                    this.score += this.addToScoreValue * 4;
+                    this.score *= 4;
                 }
                 else{
                     this.gameOver = true;
@@ -167,8 +170,11 @@ export default class Game{
             friendemy.draw(ctx);
         });
 
+        this.UI.draw(ctx);
+
         this.shootingProjectiles.forEach(projectile => {
             projectile.draw(ctx);
-        })
+        });
+        
     }
 }
