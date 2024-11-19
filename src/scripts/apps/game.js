@@ -4,6 +4,7 @@ import InputHandler from "./input.js";
 
 import { Bat, GroundZombie } from '../models/friendemy.js';
 import UI from "./ui.js";
+import CollisionAction from "./actions/collisionAction.js";
 
 export default class Game{
     constructor(gameWidth, gameHeight){
@@ -20,6 +21,8 @@ export default class Game{
         this.input = new InputHandler(this);
         this.speed = 0;
         this.maxSpeed = 6;
+
+        this.collisionAction = new CollisionAction(this);
 
         this.friendemies = [];
         this.shootingProjectiles = [];
@@ -54,7 +57,6 @@ export default class Game{
             case 7:
                 return 'Si';           
         }
-
     }
 
     getRandomNumber(min, max) {
@@ -111,7 +113,7 @@ export default class Game{
         return Math.hypot(projectile.position.x - friendemy.position.x, projectile.position.y - friendemy.position.y);
     }
 
-    collisionAction(){
+    localCollisionAction(){
         this.friendemies.forEach((friendemy) => {
             if(this.isColliding(friendemy)){
                 if(this.isFriend(friendemy)){
@@ -137,7 +139,6 @@ export default class Game{
     }
 
     update(deltaTime){
-        console.log(`score: ${this.score}`);
         this.background.update();
         this.player.update(this.input, deltaTime);
 
@@ -159,7 +160,9 @@ export default class Game{
             projectile.update();
         });
 
-        this.collisionAction();
+        //this.localCollisionAction();
+
+        this.collisionAction.collisionAction();
     }
 
     draw(ctx){
@@ -174,7 +177,6 @@ export default class Game{
 
         this.shootingProjectiles.forEach(projectile => {
             projectile.draw(ctx);
-        });
-        
+        });       
     }
 }
