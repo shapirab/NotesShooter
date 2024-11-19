@@ -6,7 +6,6 @@ export default class CollisionAction{
     collisionAction(){
         this.game.friendemies.forEach((friendemy) => {
             if(this.isColliding(friendemy)){
-                console.log('collision occured')
                 if(this.game.isFriend(friendemy)){
                     friendemy.markedForDeletion = true;
                     this.game.score *= 4;

@@ -5,6 +5,7 @@ import InputHandler from "./input.js";
 import { Bat, GroundZombie } from '../models/friendemy.js';
 import UI from "./ui.js";
 import CollisionAction from "./actions/collisionAction.js";
+import ShootingAction from "./actions/shootingAction.js";
 
 export default class Game{
     constructor(gameWidth, gameHeight){
@@ -36,6 +37,7 @@ export default class Game{
         this.gameOver = false;
 
         this.UI = new UI(this);
+        this.shootingAction = new ShootingAction(this);
 
     }
 
@@ -82,57 +84,57 @@ export default class Game{
         }
     }
 
-    hitAction(){
-        this.friendemies.forEach((friendemy) => {
-            this.shootingProjectiles.forEach((projectile) => {
-                if(this.isHit(friendemy, projectile)){
-                    projectile.markedForDeletion = true;                  
-                    if(!this.isFriend(friendemy)){
-                        this.score += this.addToScoreValue;                        
-                    }
-                    else{
-                        this.score -= this.addToScoreValue;
-                    }
-                    friendemy.markedForDeletion = true;
-                }
-            });
-        });
-    }
+    // hitAction(){
+    //     this.friendemies.forEach((friendemy) => {
+    //         this.shootingProjectiles.forEach((projectile) => {
+    //             if(this.isHit(friendemy, projectile)){
+    //                 projectile.markedForDeletion = true;                  
+    //                 if(!this.isFriend(friendemy)){
+    //                     this.score += this.addToScoreValue;                        
+    //                 }
+    //                 else{
+    //                     this.score -= this.addToScoreValue;
+    //                 }
+    //                 friendemy.markedForDeletion = true;
+    //             }
+    //         });
+    //     });
+    // }
 
-    isHit(friendemy, projectile){
-        let projectileMiddle = projectile.radius;
-        let firendemyMiddle = friendemy.width / 2;
-        let distance = this.calcProjectileDistanceFromFriendemy(friendemy, projectile);
-        if(distance - projectileMiddle - firendemyMiddle < 1){
-            return true;
-        }
-        return false;
-    }
+    // isHit(friendemy, projectile){
+    //     let projectileMiddle = projectile.radius;
+    //     let firendemyMiddle = friendemy.width / 2;
+    //     let distance = this.calcProjectileDistanceFromFriendemy(friendemy, projectile);
+    //     if(distance - projectileMiddle - firendemyMiddle < 1){
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
-    calcProjectileDistanceFromFriendemy(friendemy, projectile){
-        return Math.hypot(projectile.position.x - friendemy.position.x, projectile.position.y - friendemy.position.y);
-    }
+    // calcProjectileDistanceFromFriendemy(friendemy, projectile){
+    //     return Math.hypot(projectile.position.x - friendemy.position.x, projectile.position.y - friendemy.position.y);
+    // }
 
-    localCollisionAction(){
-        this.friendemies.forEach((friendemy) => {
-            if(this.isColliding(friendemy)){
-                if(this.isFriend(friendemy)){
-                    friendemy.markedForDeletion = true;
-                    this.score *= 4;
-                }
-                else{
-                    this.gameOver = true;
-                }
-            }
-        });
-    }
+    // localCollisionAction(){
+    //     this.friendemies.forEach((friendemy) => {
+    //         if(this.isColliding(friendemy)){
+    //             if(this.isFriend(friendemy)){
+    //                 friendemy.markedForDeletion = true;
+    //                 this.score *= 4;
+    //             }
+    //             else{
+    //                 this.gameOver = true;
+    //             }
+    //         }
+    //     });
+    // }
 
-    isColliding(friendemy){
-        return friendemy.position.x < this.player.position.x + this.player.width
-        && friendemy.position.x + friendemy.width > this.player.position.x 
-        && friendemy.position.y < this.player.position.y + this.player.height
-        && friendemy.position.y + friendemy.height > this.player.position.y;
-    }
+    // isColliding(friendemy){
+    //     return friendemy.position.x < this.player.position.x + this.player.width
+    //     && friendemy.position.x + friendemy.width > this.player.position.x 
+    //     && friendemy.position.y < this.player.position.y + this.player.height
+    //     && friendemy.position.y + friendemy.height > this.player.position.y;
+    // }
 
     isFriend(friendemy){
         return this.player.note === friendemy.note;
@@ -143,8 +145,8 @@ export default class Game{
         this.player.update(this.input, deltaTime);
 
         this.createFriendemy(deltaTime);
-        this.hitAction();
-     
+        //this.hitAction();
+        this.shootingAction.hitAction();     
         this.friendemies.forEach((friendemy, index) => {
             friendemy.update(deltaTime);
             

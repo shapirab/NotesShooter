@@ -17,4 +17,35 @@ export default class ShootingAction{
         let color = 'white';
         this.game.shootingProjectiles.push(new ShootingParticle(positionX, positionY, radius, color, velocity));
     }
+
+    hitAction(){
+        this.game.friendemies.forEach((friendemy) => {
+            this.game.shootingProjectiles.forEach((projectile) => {
+                if(this.isHit(friendemy, projectile)){
+                    projectile.markedForDeletion = true;                  
+                    if(!this.game.isFriend(friendemy)){
+                        this.game.score += this.game.addToScoreValue;                        
+                    }
+                    else{
+                        this.game.score -= this.game.addToScoreValue;
+                    }
+                    friendemy.markedForDeletion = true;
+                }
+            });
+        });
+    }
+
+    isHit(friendemy, projectile){
+        let projectileMiddle = projectile.radius;
+        let firendemyMiddle = friendemy.width / 2;
+        let distance = this.calcProjectileDistanceFromFriendemy(friendemy, projectile);
+        if(distance - projectileMiddle - firendemyMiddle < 1){
+            return true;
+        }
+        return false;
+    }
+
+    calcProjectileDistanceFromFriendemy(friendemy, projectile){
+        return Math.hypot(projectile.position.x - friendemy.position.x, projectile.position.y - friendemy.position.y);
+    }
 }
